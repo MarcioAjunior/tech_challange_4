@@ -3,6 +3,7 @@ version: '3.8'
 services:
 
   1_shepherd:
+    env_file : ./1_shepherd/.env
     build:
       context: ./1_shepherd
       dockerfile: Dockerfile
@@ -12,6 +13,8 @@ services:
     command: python main.py
     depends_on:
       - 3_db
+    networks:
+      - tc
 
   3_db:
     image: postgres:15-alpine
@@ -24,6 +27,10 @@ services:
       - "5434:5432"
     volumes:
       - ./3_db/data:/var/lib/postgresql/data
+      - ./3_db/init.sql:/docker-entrypoint-initdb.d/init.sql 
+    networks:
+      - tc
 
-
-
+networks:
+  tc:
+    driver: bridge
