@@ -20,16 +20,15 @@ DB_CONFIG = {
 }
 
 def load_data_to_api():
-    # Define as datas (D-7 e D-0)
     end_date = datetime.now().replace(hour=0, minute=1, second=0, microsecond=0)
     start_date = end_date - timedelta(days=DAYS_INTERVAL)
 
-    payload = {
-        "start_date": start_date.isoformat(),
-        "end_date": end_date.isoformat(),
-    }
     print(f"Enviando payload para API: {payload}")
     try:
+        payload = {
+            "start_date": start_date.isoformat(),
+            "end_date": end_date.isoformat(),
+        }
         response = requests.post(f"{API_URL}/load", json=payload)
         response.raise_for_status()
         print("Resposta da API:", response.json())
@@ -38,6 +37,7 @@ def load_data_to_api():
         return
 
     query = """
+        select * from lb_nn_estimator;
     """
 
     try:
@@ -51,7 +51,8 @@ def load_data_to_api():
     except psycopg2.Error as e:
         print(f"Erro ao consultar o banco de dados: {e}")
 
-schedule.every(DAYS_INTERVAL).days.at("00:01").do(load_data_to_api)
+schedule.every(DAYS_INTERVAL).minutes.do(load_data_to_api).at("00:01").do(load_data_to_api)
+#schedule.every(1).minutes.do(load_data_to_api)
 
 print("Iniciando o script Shepherd")
 while True:

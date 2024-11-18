@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+
+  1_shepherd:
+    build:
+      context: ./1_shepherd
+      dockerfile: Dockerfile
+    container_name: 1_shepherd
+    volumes:
+      - ./python_app:/app
+    command: python main.py
+    depends_on:
+      - 3_db
+
+  3_db:
+    image: postgres:15-alpine
+    container_name: 3_db
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: db
+    ports:
+      - "5434:5432"
+    volumes:
+      - ./3_db/data:/var/lib/postgresql/data
+
+
+
