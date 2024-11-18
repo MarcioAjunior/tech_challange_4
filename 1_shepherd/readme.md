@@ -34,7 +34,7 @@ DB_PASSWORD=mypassword
     - ``` python -m venv .venv ```
 
 2. **Instale as dependencias**:
-    - ``` pip install -r requirements ```
+    - ``` pip install -r requirements.txt ```
 
 3. **Execute a aplicação**:
     - ```python main.py```

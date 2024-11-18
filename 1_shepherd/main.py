@@ -7,10 +7,8 @@ from dotenv import load_dotenv
 import schedule
 import time
 
-# Carrega variáveis de ambiente do arquivo .env
 load_dotenv()
 
-# Configurações
 DAYS_INTERVAL = int(os.getenv("DAYS_INTERVAL", 7))
 API_URL = os.getenv("API_URL")
 DB_CONFIG = {
@@ -26,7 +24,6 @@ def load_data_to_api():
     end_date = datetime.now().replace(hour=0, minute=1, second=0, microsecond=0)
     start_date = end_date - timedelta(days=DAYS_INTERVAL)
 
-    # Primeiro: Fazendo a chamada à API
     payload = {
         "start_date": start_date.isoformat(),
         "end_date": end_date.isoformat(),
@@ -40,12 +37,8 @@ def load_data_to_api():
         print(f"Erro na chamada da API: {e}")
         return
 
-    # Segundo: Consultando o banco de dados
     query = """
-    SELECT column1, column2
-    FROM your_table
-    WHERE some_condition = true;
-    """  # Substitua pelo seu SQL
+    """
 
     try:
         with psycopg2.connect(**DB_CONFIG) as conn:
@@ -58,10 +51,9 @@ def load_data_to_api():
     except psycopg2.Error as e:
         print(f"Erro ao consultar o banco de dados: {e}")
 
-# Agendando a execução
 schedule.every(DAYS_INTERVAL).days.at("00:01").do(load_data_to_api)
 
-print("Iniciando o script de agendamento...")
+print("Iniciando o script Shepherd")
 while True:
     schedule.run_pending()
     time.sleep(1)
