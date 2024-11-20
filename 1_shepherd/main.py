@@ -6,6 +6,7 @@ from psycopg2.extras import RealDictCursor
 from dotenv import load_dotenv
 import schedule
 import time
+from concurrent.futures import ThreadPoolExecutor
 
 load_dotenv()
 
@@ -20,6 +21,17 @@ DB_CONFIG = {
 }
 TICKER = os.getenv("TICKER")
 NN_ESTIMATOR_NAME = os.getenv("NN_ESTIMATOR_NAME")
+NN_API_URL = os.getenv("NN_API_URL")
+
+def async_request(payload):
+    
+    print('Init thread')
+    
+    try:
+        response = requests.post(NN_API_URL + '/fine_tunning', json=payload, timeout=5000)
+        print(f"Send requisição: {response.status_code}")
+    except requests.RequestException as e:
+        print(f"Erro ao enviar requisição: {e}")
 
 def load_data_to_api():
     end_date = datetime.now().replace(hour=0, minute=1, second=0, microsecond=0)
@@ -39,16 +51,22 @@ def load_data_to_api():
         print(f"Erro na chamada da API: {e}")
         return
 
-    query = "select status from lb_nn_estimator where name = %s;" 
+    query = "select max(date) from lb_tickers_data;" 
 
     try:
         with psycopg2.connect(**DB_CONFIG) as conn:
             with conn.cursor(cursor_factory=RealDictCursor) as cursor:
-                cursor.execute(query, (NN_ESTIMATOR_NAME,))
-                results = cursor.fetchall()
-                print("Resultados da consulta ao banco de dados:")
-                for row in results:
-                    print(row)
+                cursor.execute(query)
+                result = cursor.fetchone()
+                max_date = result.get('max', datetime.now())
+                max_date = max_date + timedelta(days=DAYS_INTERVAL)
+                today_date = datetime.now().replace(hour=0, minute=1, second=0, microsecond=0)
+                
+                if max_date.replace(tzinfo=None) < today_date.replace(tzinfo=None):
+                    
+                    executor = ThreadPoolExecutor(max_workers=1)
+                    executor.submit(async_request,{"need_fine_tunning" : True})  
+                
     except psycopg2.Error as e:
         print(f"Erro ao consultar o banco de dados: {e}")
 

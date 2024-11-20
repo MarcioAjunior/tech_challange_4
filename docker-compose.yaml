@@ -3,7 +3,7 @@ version: '3.8'
 services:
 
   1_shepherd:
-    env_file : ./1_shepherd/.env
+    env_file : ./1_shepherd/.env_prod
     build:
       context: ./1_shepherd
       dockerfile: Dockerfile
@@ -15,7 +15,7 @@ services:
       - tc
 
   2_load_data:
-    env_file : ./2_load_data/.env
+    env_file : ./2_load_data/.env_prod
     build:
       context: ./2_load_data
       dockerfile: Dockerfile
