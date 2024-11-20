@@ -25,8 +25,7 @@ class QueryModel(BaseModel):
     end_date: date
     
 def generate_hash(date_str):
-    code_day = date_str.isoformat()
-    return hashlib.md5(code_day.encode()).hexdigest()
+    return hashlib.md5(date_str.encode()).hexdigest()
 
 @app.post("/load")
 async def load(query: QueryModel):
@@ -42,29 +41,45 @@ async def load(query: QueryModel):
     ticker = query.ticker.strip()
     
     try:
-        ticker = yf.Ticker(ticker)
-        history = ticker.history(start=query.start_date.strftime("%Y-%m-%d"),
-                                 end=query.end_date.strftime("%Y-%m-%d"))
         
+        history = yf.download(ticker, start=query.start_date.strftime("%Y-%m-%d"), end=query.end_date.strftime("%Y-%m-%d"))
+        
+        history.reset_index(inplace=True)
+
         if history.empty:
             raise HTTPException(
                 status_code=404,
                 detail="Nenhum dado encontrado para o ticker com as datas informadas."
             )
-        
-        results = history.reset_index().to_dict(orient="records")
-        
-        results = [{**item, 'hash' : generate_hash(item['Date']), 'ticker' : query.ticker.strip()} for item in results]
+
+        results = []
+                    
+        for _, row in history.iterrows():
+            
+            new_row = {
+                'hash': str(row['Date'].item().to_pydatetime()),
+                'ticker': ticker,
+                'date': row['Date'].item().to_pydatetime(),
+                'open': row['Open'].item(),
+                'high': row['High'].item(),
+                'low': row['Low'].item(),
+                'close': row['Close'].item(),
+                'price': None,
+                'volume': row['Volume'].item()
+            }
+
+            results.append(new_row)
         
         conn = Db(db_config = DB_CONFIG)
         
         conn.resgister_tickers_data(results)
         
         return { "msg": f"{len(results)} registro salvos com sucesso" }
-    
-    
+
+        
     except Exception as e:
         raise HTTPException(
             status_code=500,
             detail=f"Erro ao buscar dados no YFinance: {e}"
         )
+

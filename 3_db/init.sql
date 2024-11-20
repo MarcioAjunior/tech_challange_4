@@ -15,5 +15,6 @@ CREATE TABLE lb_tickers_data (
     high NUMERIC(12, 6) NOT NULL,
     low NUMERIC(12, 6) NOT NULL,
     close NUMERIC(12, 6) NOT NULL,
-    volume BIGINT NOT NULL
+    volume BIGINT NOT NULL,
+    price NUMERIC(12, 6) NULL
 );
