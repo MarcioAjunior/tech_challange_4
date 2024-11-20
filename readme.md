@@ -33,12 +33,19 @@ Onde :
 
 ## Funcionamento
 
-1. **Crie um ambiente virtual**:
+1. **1_shepherd** aciona o **2_load_data** para que ele possa extair os dados filtrando por um ticker e periodo.
 
-2. **Instale as dependencias**:
+2. **2_load_data** realiza a extração com base no ticker e periodo informado salvando em **3_db**.
 
-3. **Execute a aplicação**:
+3. **1_shepherd** verifica a necessida de realizar fine tunnig com base em limiar de tem definido.
 
+4. **4_nn_estimator** Realiza fine tunning quando necessário. Espoem através do endpoint `/predict` o modelo atual para inferencias e salva as méticas de inferencia em **5_metrics**.
 
+5. **5_metrics** Espoem dados referentes as inferencias já realizadas.
 
-
+6. **6_octopus** Implementa através de um interface GUI os endpoints da arquitetura para utilização do usuário final, sendo eles :
+   1. `/load`.
+   2. `/predict`.
+   3. `/metrics`
+   - Obs : (Não espoem nenhuma rota para fine tunning, uma vez que é destina ao usuário final).
+   
