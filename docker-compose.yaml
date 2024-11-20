@@ -8,9 +8,19 @@ services:
       context: ./1_shepherd
       dockerfile: Dockerfile
     container_name: 1_shepherd
-    volumes:
-      - ./python_app:/app
     command: python main.py
+    depends_on:
+      - 3_db
+    networks:
+      - tc
+
+  2_load_data:
+    env_file : ./2_load_data/.env
+    build:
+      context: ./2_load_data
+      dockerfile: Dockerfile
+    container_name: 2_load_data
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
     depends_on:
       - 3_db
     networks:
