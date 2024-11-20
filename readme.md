@@ -44,8 +44,8 @@ Onde :
 5. **5_metrics** Espoem dados referentes as inferencias já realizadas.
 
 6. **6_octopus** Implementa através de um interface GUI os endpoints da arquitetura para utilização do usuário final, sendo eles :
-   1. `/load`.
-   2. `/predict`.
-   3. `/metrics`
-   - Obs : (Não espoem nenhuma rota para fine tunning, uma vez que é destina ao usuário final).
+   - `/load`.
+   - `/predict`.
+   - `/metrics`
+ - Obs : (Não espoem nenhuma rota para fine tunning, uma vez que é destina ao usuário final).
    
