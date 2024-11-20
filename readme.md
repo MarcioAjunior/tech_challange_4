@@ -19,35 +19,20 @@ Onde :
    - É um script agendado, que roda perioódicamente para realizar novamente a tarefa de extração de dados. Além disso é reponsável por verificar a necessidade de realizar fine tunning no modelo novamente, comaparando a data dos registros atuais com os ultimos registro salvos no banco, quando a diferença for maior que o periodo estipulado pelo shepherd é realizada nova extração de dados e fine tunning para atualizar o modelo.
    - [Mais detalhes sobre o shepheard ](./1_shepherd/)
 
-2. ****:
-   - O script se conecta a um banco de dados PostgreSQL utilizando `psycopg2`.
-   - Executa uma query para verificar a necessida de fine tunning.
-   - Executa o fine tunning quando necessário.
+2. **2_load_data**:
+   - É uma api feita em fastApi para interação com o a api externa a arquitetura Yfinance, ela é responsável realizar busca na api yfinance, utilizando-se de parâmetros informados na requisição, sendo eles
+     - ticket
+     - start_date
+     - end_date
+    Após busca filtrada os dados são salvos no 3_db, estes dados serão posteriormente utilizadados para treinamento/validação do modelo que será exposto po 4_nn_estimator. 
 
-### Estrutura do `.env`
-
-O arquivo `.env` é utilizado para configurar variáveis de acesso ao banco de redefinição do tempo de intervalo para execução do script :
-
-```env
-DAYS_INTERVAL=7
-API_URL=https://example.com/load
-DB_HOST=localhost
-DB_PORT=5432
-DB_NAME=mydatabase
-DB_USER=myuser
-DB_PASSWORD=mypassword
-```
-
-## Instalação
+## Funcionamento
 
 1. **Crie um ambiente virtual**:
-    - ``` python -m venv .venv ```
 
 2. **Instale as dependencias**:
-    - ``` pip install -r requirements.txt ```
 
 3. **Execute a aplicação**:
-    - ```python main.py```
 
 
 
