@@ -24,8 +24,12 @@ Onde :
      - ticket
      - start_date
      - end_date
-   - Após busca filtrada os dados são salvos no 3_db, estes dados serão posteriormente utilizadados para treinamento/validação do modelo que será exposto po 4_nn_estimator.
+   - Após busca filtrada os dados são salvos no 3_db, estes dados serão posteriormente utilizadados para treinamento/validação do modelo que será exposto por 4_nn_estimator.
    - [Mais detalhes sobre o load_data ](./2_load_data/)
+
+3. **3_db**:
+   - É um banco de dados postgres configurado somente no docker-compose.yaml, utiliza-se de um script de inicizalização para criar as tabelas necessárias para o funcionamento da architetura. É onde ficam quardados os dados de treinamento, informações sobre o estimador e seu status.
+   - [Mais detalhes sobre o 3_db ](./3_db/)
 
 ## Funcionamento
 
