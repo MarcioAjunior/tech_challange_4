@@ -24,7 +24,8 @@ Onde :
      - ticket
      - start_date
      - end_date
-   - Após busca filtrada os dados são salvos no 3_db, estes dados serão posteriormente utilizadados para treinamento/validação do modelo que será exposto po 4_nn_estimator. 
+   - Após busca filtrada os dados são salvos no 3_db, estes dados serão posteriormente utilizadados para treinamento/validação do modelo que será exposto po 4_nn_estimator.
+   - [Mais detalhes sobre o load_data ](./2_load_data/)
 
 ## Funcionamento
 
