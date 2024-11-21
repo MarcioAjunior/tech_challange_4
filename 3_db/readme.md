@@ -9,7 +9,7 @@ O container 3_db realiza é o bando de dados de toda a architetura, e opera salv
   
 ## Diagrama de Entida e Relacionamento (DEER)
 
-O DEER abaixo demostra como o banco foi estruturado para salvar as informações necessárias para o funcionamento da arquitetura.
+    - O DEER abaixo demostra como o banco foi estruturado para salvar as informações necessárias para o funcionamento da arquitetura.
 
 ![Arquitetura](./deer.png)
 
