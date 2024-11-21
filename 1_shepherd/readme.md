@@ -20,12 +20,15 @@ O arquivo `.env` é utilizado para configurar variáveis de acesso ao banco de r
 
 ```env
 DAYS_INTERVAL=7
-API_URL=https://example.com/load
-DB_HOST=localhost
+API_URL=http://2_load_data:8000
+NN_API_URL=http://4_nn_estimator:8000
+NN_ESTIMATOR_NAME=estimator1
+DB_HOST=3_db
 DB_PORT=5432
-DB_NAME=mydatabase
-DB_USER=myuser
-DB_PASSWORD=mypassword
+DB_NAME=db
+DB_USER=user
+DB_PASSWORD=password
+TICKER=MSFT
 ```
 
 ## Instalação
