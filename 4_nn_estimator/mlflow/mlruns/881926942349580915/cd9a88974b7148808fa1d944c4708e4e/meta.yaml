@@ -1,0 +1,15 @@
+artifact_uri: file:///C:/Users/marci/OneDrive/Desktop/FIAP/POS/4%20FASE/TC/4_nn_estimator/mlflow/mlruns/881926942349580915/cd9a88974b7148808fa1d944c4708e4e/artifacts
+end_time: 1732329498031
+entry_point_name: ''
+experiment_id: '881926942349580915'
+lifecycle_stage: active
+run_id: cd9a88974b7148808fa1d944c4708e4e
+run_name: bald-pug-312
+run_uuid: cd9a88974b7148808fa1d944c4708e4e
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1732329338170
+status: 3
+tags: []
+user_id: marci

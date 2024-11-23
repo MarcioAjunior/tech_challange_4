@@ -1,0 +1,15 @@
+artifact_uri: file:///C:/Users/marci/OneDrive/Desktop/FIAP/POS/4%20FASE/TC/4_nn_estimator/mlflow/mlruns/881926942349580915/13c18200759a484daf148459ca46895e/artifacts
+end_time: 1732329723676
+entry_point_name: ''
+experiment_id: '881926942349580915'
+lifecycle_stage: active
+run_id: 13c18200759a484daf148459ca46895e
+run_name: rare-cow-245
+run_uuid: 13c18200759a484daf148459ca46895e
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1732329560035
+status: 3
+tags: []
+user_id: marci

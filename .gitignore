@@ -2,3 +2,4 @@
 /3_db/data
 /2_load_data/.venv
 /4_nn_estimator/.venv
+/4_nn_estimator/mlflow/.venv
