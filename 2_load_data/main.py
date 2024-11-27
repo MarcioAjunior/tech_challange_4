@@ -43,7 +43,7 @@ async def load(query: QueryModel):
     try:
         
         history = yf.download(ticker, start=query.start_date.strftime("%Y-%m-%d"), end=query.end_date.strftime("%Y-%m-%d"))
-        
+        #history = yf.download(ticker)
         history.reset_index(inplace=True)
 
         if history.empty:

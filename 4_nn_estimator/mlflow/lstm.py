@@ -1,173 +1,130 @@
-from database import Db
-import os
-from dotenv import load_dotenv
-from sklearn.preprocessing import MinMaxScaler
-import pandas as pd
+from copy import deepcopy as dc
+from torch.utils.data import Dataset
 import torch
-from torch.utils.data import TensorDataset, DataLoader
 import torch.nn as nn
-import numpy as np
-import torch.optim as optim
-from sklearn.metrics import mean_absolute_error
-import mlflow
-import mlflow.pytorch
 
-load_dotenv()
+def prepare_dataframe_for_lstm(df, sequence_length):
+    df = dc(df)
 
-os.getenv("FROM_DATE")
+    df.set_index('date', inplace=True)
 
-#UMA DATA QUE PODE SER USADA PARA SELECIONAR DADOS A PARTIR DE UMA DATA, QUANDO None PEGA TODOS OS DADOS
-FROM_DATE =  os.getenv("FROM_DATE") if os.getenv("FROM_DATE") != 'None' else None 
+    for i in range(1, sequence_length+1):
+        df[f'close(d-{i})'] = df['close'].shift(i)
 
-DB_CONFIG = {
-    "host": os.getenv("DB_HOST"),
-    "port": os.getenv("DB_PORT"),
-    "dbname": os.getenv("DB_NAME"),
-    "user": os.getenv("DB_USER"),
-    "password": os.getenv("DB_PASSWORD"),
-}
+    df.dropna(inplace=True)
+    
+    return df
 
-def create_lstm_data(data, sequence_length, index):
-    x, y = [], []
-    for i in range(len(data) - sequence_length):
-        x.append(data[i:(i + sequence_length), :]) 
-        y.append(data[i + sequence_length, index])
-    return np.array(x), np.array(y)
+class TimeSeriesDataset(Dataset):
+    def __init__(self, X, y):
+        self.X = X
+        self.y = y
 
-if __name__ == '__main__':
-    
-    #Buscando no banco de dados
-    conn = Db(db_config = DB_CONFIG) 
-    tickers_data = conn.get_data_tickers(FROM_DATE)
-    df = pd.DataFrame(data=tickers_data)
-    
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    
-    #Definindo hiperparâmetros
-    columns = ['close']
-    
-    input_size = len(columns)    # Number of features in the input data
-    index_target = input_size - 1
-    
-    hidden_size = 32     # Number of hidden units in the LSTM
-    num_layers = 4       # Number of LSTM layers
-    output_size = 1      # Number of output units (e.g., regression output)
-    num_epochs = 100
-    batch_size = 64
-    learning_rate = 0.001
-    sequence_length = 30  # Length of the input sequences
+    def __len__(self):
+        return len(self.X)
 
-    df = df.sort_values('date')
-    df[columns] = df[columns].apply(pd.to_numeric, errors='coerce')
-    data = df[columns].values
+    def __getitem__(self, i):
+        return self.X[i], self.y[i]
+    
+class LSTM(nn.Module):
+    def __init__(self, input_size = 1, hidden_size = 4, num_layers = 1 , sequence_length = 7, porcentage_train = 0.95, batch_size = 16, learning_rate = 0.001,num_epochs = 10, device='cpu'):
+        super().__init__()
+        self.input_size = 1 
+        self.hidden_size = hidden_size
+        self.num_layers = num_layers
+        self.sequence_length = sequence_length
+        self.porcentage_train = porcentage_train
+        self.batch_size = batch_size
+        self.learning_rate = learning_rate
+        self.num_epochs = num_epochs
+        self.device = device
 
-    #scaler = MinMaxScaler()
-    #data_scaled = scaler.fit_transform(data)
-    
-    X, y = create_lstm_data(data, sequence_length,index_target)
-    
-    train_size = int(0.8 * len(X))
-    X_train, y_train = X[:train_size], y[:train_size]
-    X_test, y_test = X[train_size:], y[train_size:]
-    
-    # Conversão para tensores
-    X_train_tensor = torch.tensor(X_train, dtype=torch.float32).to(device)
-    y_train_tensor = torch.tensor(y_train, dtype=torch.float32).to(device)
-    X_test_tensor = torch.tensor(X_test, dtype=torch.float32).to(device)
-    y_test_tensor = torch.tensor(y_test, dtype=torch.float32).to(device)
-    
-    train_dataset = TensorDataset(X_train_tensor, y_train_tensor)
-    test_dataset = TensorDataset(X_test_tensor, y_test_tensor)
+        self.lstm = nn.LSTM(input_size, hidden_size, num_layers,
+                            batch_first=True)
 
-    train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
-    test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False)
+        self.fc = nn.Linear(hidden_size, 1)
+
+    def forward(self, x):
+        batch_size = x.size(0)
+        h0 = torch.zeros(self.num_layers, batch_size, self.hidden_size).to(self.device)
+        c0 = torch.zeros(self.num_layers, batch_size, self.hidden_size).to(self.device)
+
+        out, _ = self.lstm(x, (h0, c0))
+        out = self.fc(out[:, -1, :])
+        return out
     
-    class LSTM(nn.Module):
+    def predict(self, target_date, db_config, ticker='', sequence_length=7):
+        from sklearn.preprocessing import MinMaxScaler
+        from database import Db
+        import pandas as pd
+        import numpy as np
+        import datetime
+        import torch
         
-        def __init__(self, input_size, hidden_size, num_layers, output_size):
-            super(LSTM, self).__init__()
-            self.lstm = nn.LSTM(input_size, hidden_size, num_layers, batch_first=True)
-            self.fc = nn.Linear(hidden_size, output_size)
-
-        def forward(self, x):
-            out, _ = self.lstm(x)
-            out = self.fc(out[:, -1, :])
-            return out
-    
-    def train_model():
-
-        model = LSTM(input_size, hidden_size, num_layers, output_size).to(device)
-        criterion = nn.MSELoss()
-        optimizer = optim.Adam(model.parameters(), lr=learning_rate)
-
-        mlflow.set_experiment("LSTM Artificial Data Regression")
-        with mlflow.start_run():
-            """mlflow.log_param("intermediate_networks", [
-                model.lstm.__name__,
-                model.fc.__name__
-            ])"""
-            mlflow.log_param("input_size", input_size)
-            mlflow.log_param("hidden_size", hidden_size)
-            mlflow.log_param("num_layers", num_layers)
-            mlflow.log_param("output_size", output_size)
-            mlflow.log_param("num_epochs", num_epochs)
-            mlflow.log_param("batch_size", batch_size)
-            mlflow.log_param("learning_rate", learning_rate)
-            mlflow.log_param("sequence_length", sequence_length)
-
-            for epoch in range(num_epochs):
-                model.train()
-                running_loss = 0.0
+        # Configurando o scaler e carregando dados
+        scaler = MinMaxScaler(feature_range=(-1, 1))
+        from_date = datetime.datetime.now() - datetime.timedelta(days=sequence_length)
+        from_date_str = from_date.strftime('%Y-%m-%d')
+        
+        conn = Db(db_config=db_config)
+        tickers_data = conn.get_data_tickers(None, ticker=ticker)
+        
+        df = pd.DataFrame(data=tickers_data)
+        
+        # Preparando o DataFrame para o modelo
+        historical_data = df[['date', 'close']].sort_values(by='date', ascending=False)
+        
+        historical_data.dropna(inplace=True)
                 
-                for i, (sequences, labels) in enumerate(train_loader):
-                    sequences, labels = sequences.to(device), labels.to(device)
+        prepared_df = prepare_dataframe_for_lstm(historical_data, sequence_length=sequence_length)
+        
+        prepared_df = prepared_df.head(sequence_length)
+        
+        prepared_df_np = prepared_df.to_numpy()
+        
+        # Normalizando os dados
+        prepared_df_np = scaler.fit_transform(prepared_df_np)
+        X_input_normalized = prepared_df_np[:, 1:]  
+        X_input_normalized = np.flip(X_input_normalized, axis=1)  
+        X_input_normalized = X_input_normalized.reshape((-1, sequence_length, 1))  
+                
+        X_input_tensor = torch.tensor(X_input_normalized.copy()).float().to(self.device)
 
-                    # Forward pass
-                    outputs = model(sequences)
-                    loss = criterion(outputs, labels)
+        current_date = historical_data['date'].max()  # Última data registrada
+        if hasattr(current_date, 'tzinfo') and current_date.tzinfo is not None:
+            current_date = current_date.replace(tzinfo=None)
 
-                    # Backward pass and optimization
-                    optimizer.zero_grad()
-                    loss.backward()
-                    optimizer.step()
+        target_date = datetime.datetime.strptime(target_date, "%Y-%m-%d").replace(tzinfo=None)
 
-                    running_loss += loss.item()
-                    
-                    # Log metrics every 100 batches
-                    if i % 100 == 0:
-                        print(f"Epoch [{epoch+1}/{num_epochs}], Step [{i+1}/{len(train_loader)}], Loss: {loss.item():.4f}")
-                        mlflow.log_metric("train_loss", running_loss / (i+1), step=epoch * len(train_loader) + i)
+        dates_to_predict = pd.date_range(start=current_date, end=target_date).strftime('%Y-%m-%d').tolist()
 
-            # Save the model
-            mlflow.pytorch.log_model(model, "lstm_artificial_data_model")
-
-            # Evaluate the model
-            evaluate_model(model, criterion)
-            
-    def evaluate_model(model, criterion):
-        model.eval()
-        test_loss = 0.0
+        new_sequence = X_input_normalized[-1, :]
         predictions = []
-        true_values = []
+        self.eval()
         
-        with torch.no_grad():
-            for sequences, labels in test_loader:
-                sequences, labels = sequences.to(device), labels.to(device)
-                outputs = model(sequences)
-                loss = criterion(outputs, labels)
-                test_loss += loss.item()
-                
-                predictions.extend(outputs.cpu().numpy())
-                true_values.extend(labels.cpu().numpy())
+        for date in dates_to_predict:  
+            with torch.no_grad():
+                X_input_tensor = torch.tensor(new_sequence.reshape((1, sequence_length, 1)).copy()).float().to(self.device)
 
-        #MSE
-        average_test_loss = test_loss / len(test_loader)
-        print(f"Test Loss: {average_test_loss:.4f}")
-        mlflow.log_metric("test_loss", average_test_loss)
-        
-        #MAE
-        mae = mean_absolute_error(true_values, predictions)
-        print(f"Mean Absolute Error: {mae:.4f}")
-        mlflow.log_metric("mae", mae)
-        
-    train_model()
+                predicted = self(X_input_tensor)
+            predicted_value = predicted.cpu().numpy().reshape(1, -1) 
+            
+            predicted_value_with_dummy_columns = np.zeros((predicted_value.shape[0], 8)) 
+            predicted_value_with_dummy_columns[:, 0] = predicted_value.flatten()
+
+            predicted_value_corrected = scaler.inverse_transform(predicted_value_with_dummy_columns)
+
+            predicted_value_final = predicted_value_corrected[:, 0]
+            
+            new_sequence = np.roll(new_sequence, -1)  
+            new_sequence[-1] = predicted_value_final.flatten()[0] 
+
+            #print(new_sequence)
+
+            predictions.append({
+                'date': date,
+                'predicted_close': predicted_value_final.flatten()[0]
+            })
+            
+            
+        return predictions

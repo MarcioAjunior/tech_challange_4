@@ -26,13 +26,13 @@ class Db:
             self.cursor.close()
             self.connection.close()
             
-    def get_data_tickers(self, from_date = None):
+    def get_data_tickers(self, from_date = None, ticker = None):
         
         self.connection = psycopg2.connect(**self._config)
         self.connection.autocommit = True
         self.cursor = self.connection.cursor()
         
-        query = """
+        query = f"""
             SELECT 
                 ticker
                 ,open
@@ -43,6 +43,8 @@ class Db:
                 ,date
             FROM
                 lb_tickers_data
+            WHERE
+                ticker = '{ticker}'
             order by
                 date
             """
@@ -61,8 +63,9 @@ class Db:
                 lb_tickers_data
             WHERE
                 cast(date as date) > cast('{from_date}' as date)
+                and ticker = '{ticker}'
             ORDER BY
-                date
+                date 
             """        
         try:
             self.cursor.execute(query)

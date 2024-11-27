@@ -41,6 +41,22 @@ services:
     networks:
       - tc
 
+  4_mlflow:
+    env_file : ./4_nn_estimator/mlflow/.env_prod
+    build:
+      context: ./4_nn_estimator/mlflow
+      dockerfile: Dockerfile
+    container_name: 4_mlflow
+    command: mlflow ui --host 0.0.0.0 --port 5000
+    ports:
+      - "5001:5000"
+    volumes:
+      - ./mlruns:/app/mlrun
+    depends_on:
+      - 3_db
+    networks:
+      - tc
+
 networks:
   tc:
     driver: bridge
