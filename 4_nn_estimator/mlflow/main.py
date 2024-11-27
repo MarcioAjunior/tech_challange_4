@@ -190,4 +190,4 @@ if __name__ == '__main__':
             registered_model_name="LSTM_with_scaler"
         )
 
-        print("Modelo salvo com normalizador incluído!")
+        print("Modelo salvo")
