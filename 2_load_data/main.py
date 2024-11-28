@@ -6,6 +6,7 @@ from dotenv import load_dotenv
 import hashlib
 import os
 from database import Db
+from model import Model
 
 app = FastAPI()
 
@@ -18,6 +19,8 @@ DB_CONFIG = {
     "user": os.getenv("DB_USER"),
     "password": os.getenv("DB_PASSWORD"),
 }
+MLFLOW_TRACKING_URI = os.getenv("MLFLOW_TRACKING_URI")
+MODEL_URI = os.getenv("MODEL_URI")
 
 class QueryModel(BaseModel):
     ticker: str
@@ -42,8 +45,8 @@ async def load(query: QueryModel):
     
     try:
         
-        history = yf.download(ticker, start=query.start_date.strftime("%Y-%m-%d"), end=query.end_date.strftime("%Y-%m-%d"))
-        #history = yf.download(ticker)
+        #history = yf.download(ticker, start=query.start_date.strftime("%Y-%m-%d"), end=query.end_date.strftime("%Y-%m-%d"))
+        history = yf.download(ticker)
         history.reset_index(inplace=True)
 
         if history.empty:
@@ -52,10 +55,16 @@ async def load(query: QueryModel):
                 detail="Nenhum dado encontrado para o ticker com as datas informadas."
             )
 
+        model = Model(tracking_uri=MLFLOW_TRACKING_URI,model_uri=MODEL_URI,db_config=DB_CONFIG,ticker=ticker)
+        
         results = []
                     
         for _, row in history.iterrows():
-            
+                        
+            predicted = model.predict(date=row['Date'].item().to_pydatetime().strftime('%Y-%m-%d'))
+            print(predicted, 'predicted')
+            raise Exception('AAA')
+                        
             new_row = {
                 'hash': str(row['Date'].item().to_pydatetime()),
                 'ticker': ticker,
@@ -65,7 +74,8 @@ async def load(query: QueryModel):
                 'low': row['Low'].item(),
                 'close': row['Close'].item(),
                 'price': None,
-                'volume': row['Volume'].item()
+                'volume': row['Volume'].item(),
+                'predicted' : predicted
             }
 
             results.append(new_row)

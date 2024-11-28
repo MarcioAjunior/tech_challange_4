@@ -34,7 +34,7 @@ class Db:
         
         query = """
         INSERT INTO lb_tickers_data (
-            hash, ticker, date, open, high, low, close, price, volume
+            hash, ticker, date, open, high, low, close, price, volume, predicted
         ) VALUES %s
         ON CONFLICT (hash) DO NOTHING;
         """  
@@ -48,7 +48,8 @@ class Db:
                 item['low'],
                 item['close'],
                 item['price'],
-                int(item['volume'])
+                int(item['volume']),
+                item['predicted'],
             )
             for item in data_list
         ]

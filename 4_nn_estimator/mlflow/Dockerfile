@@ -7,6 +7,7 @@ COPY requirements.txt .
 COPY main.py .
 COPY lstm.py .
 COPY tester.py .
+COPY database.py .
 
 COPY mlruns ./mlruns
 
