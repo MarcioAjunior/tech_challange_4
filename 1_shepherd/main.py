@@ -62,7 +62,7 @@ def load_data_to_api():
                 max_date = max_date + timedelta(days=DAYS_INTERVAL)
                 today_date = datetime.now().replace(hour=0, minute=1, second=0, microsecond=0)
                 
-                if max_date.replace(tzinfo=None) < today_date.replace(tzinfo=None):
+                if max_date.replace(tzinfo=None) <= today_date.replace(tzinfo=None):
                     
                     executor = ThreadPoolExecutor(max_workers=1)
                     executor.submit(async_request,{"need_fine_tunning" : True})  
@@ -70,8 +70,8 @@ def load_data_to_api():
     except psycopg2.Error as e:
         print(f"Erro ao consultar o banco de dados: {e}")
 
-#schedule.every(DAYS_INTERVAL).minutes.do(load_data_to_api).at("00:01").do(load_data_to_api)
-schedule.every(1).seconds.do(load_data_to_api)
+schedule.every(DAYS_INTERVAL).minutes.do(load_data_to_api).at("00:10").do(load_data_to_api)
+#schedule.every(1).seconds.do(load_data_to_api)
 
 print("Iniciando o script Shepherd")
 while True:
