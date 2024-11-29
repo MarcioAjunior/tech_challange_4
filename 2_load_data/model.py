@@ -8,14 +8,11 @@ class Model:
         self.db_config = db_config
         self.ticker = ticker
 
-    def __enter__(self):
-        print('iniciando carregamento do modelo')        
+    def __enter__(self):      
         mlflow.set_tracking_uri(self.tracking_uri)
         self.model = mlflow.pytorch.load_model(self.model_uri)
-        print("Modelo carregado.")
         return self
 
-    
 
     def __exit__(self, exc_type, exc_value, traceback):
 
@@ -23,12 +20,14 @@ class Model:
         print("Modelo descarregado.")
 
     def predict(self, date=''):
+                
         with self:
             if self.model is None:
                 raise RuntimeError("Modelo não carregado.")
-            
-            date = "2024-12-01"
-            print(date)
             predictions = self.model.predict(date, self.db_config, self.ticker)
-            print('predict return = ', predictions)
-            return predictions
+            
+            for pred in predictions:
+                if(pred['date'] == date):
+                    return pred['predicted_close']
+            
+            return None

@@ -4,10 +4,8 @@ FROM python:3.11-slim
 WORKDIR /app
 
 COPY requirements.txt .
-COPY main.py .
-COPY lstm.py .
-COPY tester.py .
 COPY database.py .
+COPY generate_model.py .
 
 COPY mlruns ./mlruns
 

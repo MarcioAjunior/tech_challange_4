@@ -45,8 +45,8 @@ async def load(query: QueryModel):
     
     try:
         
-        #history = yf.download(ticker, start=query.start_date.strftime("%Y-%m-%d"), end=query.end_date.strftime("%Y-%m-%d"))
-        history = yf.download(ticker)
+        history = yf.download(ticker, start=query.start_date.strftime("%Y-%m-%d"), end=query.end_date.strftime("%Y-%m-%d"))
+        #history = yf.download(ticker, end = query.end_date.strftime("%Y-%m-%d"))
         history.reset_index(inplace=True)
 
         if history.empty:
@@ -61,10 +61,8 @@ async def load(query: QueryModel):
                     
         for _, row in history.iterrows():
                         
-            predicted = model.predict(date=row['Date'].item().to_pydatetime().strftime('%Y-%m-%d'))
-            print(predicted, 'predicted')
-            raise Exception('AAA')
-                        
+            predicted = None #model.predict(date=row['Date'].item().to_pydatetime().strftime('%Y-%m-%d'))
+
             new_row = {
                 'hash': str(row['Date'].item().to_pydatetime()),
                 'ticker': ticker,
