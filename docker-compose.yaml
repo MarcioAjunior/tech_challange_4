@@ -3,7 +3,7 @@ version: '3.8'
 services:
 
   1_shepherd:
-    env_file : ./1_shepherd/.env_prod
+    env_file : ./1_shepherd/prod_.env
     build:
       context: ./1_shepherd
       dockerfile: Dockerfile
@@ -15,12 +15,16 @@ services:
       - tc
 
   2_load_data:
-    env_file : ./2_load_data/.env_prod
+    env_file : ./2_load_data/prod_.env
     build:
       context: ./2_load_data
       dockerfile: Dockerfile
     container_name: 2_load_data
     command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+    volumes:
+      - ./2_load_data:/app
+    ports:
+      - "8001:8000"
     depends_on:
       - 3_db
     networks:
@@ -42,7 +46,7 @@ services:
       - tc
 
   4_mlflow:
-    env_file : ./4_nn_estimator/mlflow/.env_prod
+    env_file : ./4_nn_estimator/mlflow/prod_.env
     build:
       context: ./4_nn_estimator/mlflow
       dockerfile: Dockerfile
@@ -51,9 +55,35 @@ services:
     ports:
       - "5001:5000"
     volumes:
-      - ./mlruns:/app/mlrun
+      - ./4_nn_estimator/mlflow/mlruns:/app/mlruns
     depends_on:
       - 3_db
+    networks:
+      - tc
+
+  4_api:
+    env_file : ./4_nn_estimator/api/prod_.env
+    build:
+      context: ./4_nn_estimator/api
+      dockerfile: Dockerfile
+    container_name: 4_api
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+    volumes:
+      - ./4_nn_estimator/api:/app
+    ports:
+      - "8002:8000"
+    depends_on:
+      - 3_db
+    networks:
+      - tc
+
+  4_prometheus:
+    image: prom/prometheus:latest
+    container_name: 4_prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./4_nn_estimator/api/prometheus.yml:/etc/prometheus/prometheus.yml
     networks:
       - tc
 

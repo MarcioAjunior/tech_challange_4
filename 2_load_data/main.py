@@ -61,7 +61,9 @@ async def load(query: QueryModel):
                     
         for _, row in history.iterrows():
                         
-            predicted = None #model.predict(date=row['Date'].item().to_pydatetime().strftime('%Y-%m-%d'))
+            predicted = model.predict(date=row['Date'].item().to_pydatetime().strftime('%Y-%m-%d'))
+
+            print(predicted)
 
             new_row = {
                 'hash': str(row['Date'].item().to_pydatetime()),
@@ -73,7 +75,7 @@ async def load(query: QueryModel):
                 'close': row['Close'].item(),
                 'price': None,
                 'volume': row['Volume'].item(),
-                'predicted' : predicted
+                'predicted' : float(predicted) if predicted is not None else None 
             }
 
             results.append(new_row)
@@ -86,6 +88,10 @@ async def load(query: QueryModel):
 
         
     except Exception as e:
+        
+        print(MODEL_URI, 'MODEL_URI')
+        print(MLFLOW_TRACKING_URI, 'MLFLOW_TRACKING_URI')
+        
         raise HTTPException(
             status_code=500,
             detail=f"Erro ao buscar dados no YFinance: {e}"

@@ -35,9 +35,13 @@ def async_request(payload):
 
 def load_data_to_api():
     end_date = datetime.now().replace(hour=0, minute=1, second=0, microsecond=0)
-    start_date = end_date - timedelta(days=DAYS_INTERVAL)
+    start_date = end_date - timedelta(days=12)
 
     try:
+        
+        print(start_date.strftime("%Y-%m-%d"))
+        print(end_date.strftime("%Y-%m-%d"))
+        
         payload = {
             "ticker": TICKER,
             "start_date": start_date.strftime("%Y-%m-%d"),
@@ -70,8 +74,9 @@ def load_data_to_api():
     except psycopg2.Error as e:
         print(f"Erro ao consultar o banco de dados: {e}")
 
-schedule.every(DAYS_INTERVAL).minutes.do(load_data_to_api).at("00:10").do(load_data_to_api)
-#schedule.every(1).seconds.do(load_data_to_api)
+#schedule.every(DAYS_INTERVAL).days.do(load_data_to_api).at("00:01").do(load_data_to_api)
+schedule.every(DAYS_INTERVAL).minutes.do(load_data_to_api)
+
 
 print("Iniciando o script Shepherd")
 while True:

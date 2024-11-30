@@ -1,1 +1,18 @@
-MLFLOW_TRACKING_URI=http://4_mlflow:5000
+FROM python:3.11-slim
+
+WORKDIR /app
+
+COPY requirements.txt .
+COPY main.py .
+COPY database.py .
+COPY model.py .
+COPY prometheus_metrics.py .
+COPY prometheus.yml .
+COPY mlruns ./mlruns
+
+
+RUN pip install --no-cache-dir -r requirements.txt
+
+EXPOSE 8000
+
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]

@@ -9,9 +9,10 @@ class Model:
         self.ticker = ticker
 
     def __enter__(self):      
-        #mlflow.set_tracking_uri(self.tracking_uri)
+        
         mlflow.set_tracking_uri("file:///app/mlruns")
         self.model = mlflow.pytorch.load_model(self.model_uri)
+        
         return self
 
 
@@ -20,15 +21,11 @@ class Model:
         self.model = None
         print("Modelo descarregado.")
 
-    def predict(self, date=''):
-                
+    def predict(self, date=''):   
         with self:
             if self.model is None:
                 raise RuntimeError("Modelo não carregado.")
-            predictions = self.model.predict(date, self.db_config, self.ticker)
-            
-            for pred in predictions:
-                if(pred['date'] == date):
-                    return pred['predicted_close']
-            
-            return None
+
+            predictions = self.model.predict(str(date), self.db_config, 'MSFT') 
+                        
+            return predictions

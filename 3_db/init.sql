@@ -17,5 +17,6 @@ CREATE TABLE lb_tickers_data (
     close NUMERIC(12, 6) NOT NULL,
     volume BIGINT NOT NULL,
     price NUMERIC(12, 6) NULL,
-    predicted NUMERIC(12,6) NULL
+    predicted NUMERIC(12,6) NULL,
+    is_training BOOL default false
 );

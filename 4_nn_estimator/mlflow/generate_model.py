@@ -322,7 +322,7 @@ if __name__ == '__main__':
     loss_function = nn.MSELoss()
     optimizer = torch.optim.Adam(model.parameters(), model.learning_rate)
     
-    mlflow.set_experiment("LSTM Artificial Data Regression 3")
+    mlflow.set_experiment("LSTM Artificial Data Regression 4")
     
     with mlflow.start_run():
         

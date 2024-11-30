@@ -4,3 +4,6 @@
 /4_nn_estimator/.venv
 /4_nn_estimator/mlflow/.venv
 /4_nn_estimator/mlflow/mlruns
+/2_load_data/mlruns
+/4_nn_estimator/api/.venv
+/4_nn_estimator/api/mlruns/264516991243470846
