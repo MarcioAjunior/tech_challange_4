@@ -1,9 +1,7 @@
 import torch
 import numpy as np
 from generate_model_pth import LSTM
-import joblib  # Para carregar o scaler
 
-# Configurações do modelo e entrada
 input_size = 1 
 hidden_size = 4 
 num_layers = 1
@@ -29,7 +27,7 @@ model.load_state_dict(checkpoint['model_state_dict'])
 predictions = model.predict(
     target_date='2024-12-10',
     ticker='MSFT',
-    db_config=db_config,  # Retirado porque os dados vêm diretamente
+    db_config=db_config,
     sequence_length=sequence_length
 )
 

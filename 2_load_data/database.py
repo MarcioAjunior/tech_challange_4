@@ -54,8 +54,6 @@ class Db:
             for item in data_list
         ]
         
-        print(values ,'values')
-
         try:
             execute_values(self.cursor, query, values)
             #print(f"{len(values)}")

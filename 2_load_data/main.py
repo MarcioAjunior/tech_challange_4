@@ -19,8 +19,7 @@ DB_CONFIG = {
     "user": os.getenv("DB_USER"),
     "password": os.getenv("DB_PASSWORD"),
 }
-MLFLOW_TRACKING_URI = os.getenv("MLFLOW_TRACKING_URI")
-MODEL_URI = os.getenv("MODEL_URI")
+MODEL_PATH = os.getenv("MODEL_PATH")
 
 class QueryModel(BaseModel):
     ticker: str
@@ -54,16 +53,14 @@ async def load(query: QueryModel):
                 status_code=404,
                 detail="Nenhum dado encontrado para o ticker com as datas informadas."
             )
-
-        model = Model(tracking_uri=MLFLOW_TRACKING_URI,model_uri=MODEL_URI,db_config=DB_CONFIG,ticker=ticker)
+            
+        model = Model(model_path=MODEL_PATH,db_config=DB_CONFIG,ticker=ticker)
         
         results = []
                     
         for _, row in history.iterrows():
                         
             predicted = model.predict(date=row['Date'].item().to_pydatetime().strftime('%Y-%m-%d'))
-
-            print(predicted)
 
             new_row = {
                 'hash': str(row['Date'].item().to_pydatetime()),
@@ -88,9 +85,6 @@ async def load(query: QueryModel):
 
         
     except Exception as e:
-        
-        print(MODEL_URI, 'MODEL_URI')
-        print(MLFLOW_TRACKING_URI, 'MLFLOW_TRACKING_URI')
         
         raise HTTPException(
             status_code=500,
