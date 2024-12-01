@@ -8,6 +8,7 @@ COPY database.py .
 COPY model.py .
 COPY prometheus_metrics.py .
 COPY prometheus.yml .
+
 COPY mlruns ./mlruns
 
 

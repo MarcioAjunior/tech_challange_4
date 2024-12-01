@@ -2,10 +2,10 @@ FROM python:3.11-slim
 
 WORKDIR /app
 
-COPY requirements.txt .
-COPY main.py .
 COPY database.py .
+COPY main.py .
 COPY model.py .
+COPY requirements.txt .
 COPY mlruns ./mlruns
 
 
