@@ -2,6 +2,13 @@ FROM python:3.11-slim
 
 WORKDIR /app
 
+ENV DB_HOST=3_db
+ENV DB_PORT=5432
+ENV DB_NAME=db
+ENV DB_USER=user
+ENV DB_PASSWORD=password
+ENV PROMETHEUS_URL=http://4_prometheus:9090
+
 COPY database.py .
 COPY main.py .
 COPY metrics.py .

@@ -3,10 +3,6 @@ version: '3.8'
 services:
 
   1_shepherd:
-    env_file : ./1_shepherd/prod_.env
-    build:
-      context: ./1_shepherd
-      dockerfile: Dockerfile
     container_name: 1_shepherd
     command: python main.py
     depends_on:
@@ -15,10 +11,6 @@ services:
       - tc
 
   2_load_data:
-    env_file : ./2_load_data/prod_.env
-    build:
-      context: ./2_load_data
-      dockerfile: Dockerfile
     container_name: 2_load_data
     command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
     ports:
@@ -31,23 +23,12 @@ services:
   3_db:
     image: postgres:15-alpine
     container_name: 3_db
-    environment:
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: db
     ports:
       - "5434:5432"
-    volumes:
-      - ./3_db/data:/var/lib/postgresql/data
-      - ./3_db/init.sql:/docker-entrypoint-initdb.d/init.sql 
     networks:
       - tc
 
   4_mlflow:
-    env_file : ./4_nn_estimator/mlflow/prod_.env
-    build:
-      context: ./4_nn_estimator/mlflow
-      dockerfile: Dockerfile
     container_name: 4_mlflow
     command: mlflow ui --host 0.0.0.0 --port 5000
     ports:
@@ -58,10 +39,6 @@ services:
       - tc
 
   4_api:
-    env_file : ./4_nn_estimator/api/prod_.env
-    build:
-      context: ./4_nn_estimator/api
-      dockerfile: Dockerfile
     container_name: 4_api
     command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
     ports:
@@ -83,10 +60,6 @@ services:
       - tc
 
   5_metrics:
-    env_file : ./5_metrics/prod_.env
-    build:
-      context: ./5_metrics
-      dockerfile: Dockerfile
     container_name: 5_metrics
     command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
     ports:
