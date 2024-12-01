@@ -84,6 +84,9 @@ services:
       - "9090:9090"
     volumes:
       - ./4_nn_estimator/api/prometheus.yml:/etc/prometheus/prometheus.yml
+    depends_on:
+      - 3_db
+      - 4_api
     networks:
       - tc
 
