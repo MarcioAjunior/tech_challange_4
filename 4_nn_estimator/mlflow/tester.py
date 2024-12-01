@@ -1,6 +1,6 @@
 import torch
 import numpy as np
-from lstm import LSTM
+from generate_model import LSTM
 
 input_size = 1 
 hidden_size = 4 
@@ -20,7 +20,7 @@ model = LSTM(input_size, hidden_size, num_layers, device)
 model.to(device)
 
 predictions = model.predict(
-    target_date='2024-12-01',
+    target_date='2024-12-10',
     ticker='MSFT',
     db_config=db_config,
     sequence_length=sequence_length

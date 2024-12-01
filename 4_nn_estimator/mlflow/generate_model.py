@@ -198,7 +198,7 @@ class LSTM(nn.Module):
                 
         X_input_tensor = torch.tensor(X_input_normalized.copy()).float().to(self.device)
 
-        current_date = historical_data['date'].max()  # Última data registrada
+        current_date = historical_data['date'].max() 
         current_date += datetime.timedelta(days=1)
         if hasattr(current_date, 'tzinfo') and current_date.tzinfo is not None:
             current_date = current_date.replace(tzinfo=None)
@@ -226,8 +226,8 @@ class LSTM(nn.Module):
 
             predicted_value_final = predicted_value_corrected[:, 0]
             
-            new_sequence = np.roll(new_sequence, -1)  
-            new_sequence[-1] = predicted_value_final.flatten()[0] 
+            new_sequence = np.append(new_sequence.flatten()[1:], predicted_value_final.flatten()).reshape((-1, 1))
+
 
             #print(new_sequence)
 
@@ -322,7 +322,7 @@ if __name__ == '__main__':
     loss_function = nn.MSELoss()
     optimizer = torch.optim.Adam(model.parameters(), model.learning_rate)
     
-    mlflow.set_experiment("LSTM Artificial Data Regression 4")
+    mlflow.set_experiment("LSTM Artificial Data Regression latest Model")
     
     with mlflow.start_run():
         
