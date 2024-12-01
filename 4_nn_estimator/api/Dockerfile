@@ -2,12 +2,15 @@ FROM python:3.11-slim
 
 WORKDIR /app
 
-COPY requirements.txt .
+
 COPY main.py .
 COPY database.py .
+COPY lstm.py .
 COPY model.py .
+COPY model.pth .
 COPY prometheus_metrics.py .
 COPY prometheus.yml .
+COPY requirements.txt .
 
 COPY mlruns ./mlruns
 

@@ -22,9 +22,8 @@ DB_CONFIG = {
     "user": os.getenv("DB_USER"),
     "password": os.getenv("DB_PASSWORD"),
 }
-MLFLOW_TRACKING_URI = os.getenv("MLFLOW_TRACKING_URI")
-MODEL_URI = os.getenv("MODEL_URI")
-TICKET = os.getenv("TICKET")
+MODEL_PATH = os.getenv("MODEL_PATH")
+TICKER = os.getenv("TICKER")
 
 class QueryModel(BaseModel):
     date: str
@@ -39,7 +38,7 @@ async def predict(date: QueryModel):
     
     try:
         
-        model = Model(tracking_uri=MLFLOW_TRACKING_URI,model_uri=MODEL_URI,db_config=DB_CONFIG,ticker=TICKET)
+        model = Model(model_path=MODEL_PATH,db_config=DB_CONFIG,ticker=TICKER)
         
         start_time = time.time()
         predicts = model.predict(date=input_date)

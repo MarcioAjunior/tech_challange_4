@@ -1,31 +1,33 @@
-import mlflow.pytorch
+import torch
+import os
+from lstm import LSTM
+
 
 class Model:
-    def __init__(self,tracking_uri, model_uri, db_config, ticker):
+    def __init__(self,model_path,db_config, ticker):
         self.model = None    
-        self.tracking_uri = tracking_uri
-        self.model_uri = model_uri
+        self.model_path = model_path
         self.db_config = db_config
         self.ticker = ticker
 
-    def __enter__(self):      
+    def load_model(self):
+        if self.model is None:
+            if os.path.exists(self.model_path):
+                print("carregando...")
+                self.model = LSTM()
+                checkpoint = torch.load("model.pth", map_location=self.model.device)
+                self.model.load_state_dict(checkpoint['model_state_dict'])
+            else:
+                self.model = LSTM()
+                
+    def predict(self, date=''):      
+        self.load_model()
         
-        mlflow.set_tracking_uri("file:///app/mlruns")
-        self.model = mlflow.pytorch.load_model(self.model_uri)
+        predictions = self.model.predict(
+            target_date=str(date),
+            ticker=self.ticker,
+            db_config=self.db_config,
+            sequence_length=7
+        )
         
-        return self
-
-
-    def __exit__(self, exc_type, exc_value, traceback):
-
-        self.model = None
-        print("Modelo descarregado.")
-
-    def predict(self, date=''):   
-        with self:
-            if self.model is None:
-                raise RuntimeError("Modelo não carregado.")
-
-            predictions = self.model.predict(str(date), self.db_config, 'MSFT') 
-                        
-            return predictions
+        return predictions
