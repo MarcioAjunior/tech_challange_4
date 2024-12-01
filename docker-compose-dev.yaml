@@ -21,6 +21,8 @@ services:
       dockerfile: Dockerfile
     container_name: 2_load_data
     command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+    volumes:
+      - ./2_load_data:/app
     ports:
       - "8001:8000"
     depends_on:
@@ -52,6 +54,8 @@ services:
     command: mlflow ui --host 0.0.0.0 --port 5000
     ports:
       - "5001:5000"
+    volumes:
+      - ./4_nn_estimator/mlflow/mlruns:/app/mlruns
     depends_on:
       - 3_db
     networks:
@@ -64,6 +68,8 @@ services:
       dockerfile: Dockerfile
     container_name: 4_api
     command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+    volumes:
+      - ./4_nn_estimator/api:/app
     ports:
       - "8002:8000"
     depends_on:
@@ -76,6 +82,8 @@ services:
     container_name: 4_prometheus
     ports:
       - "9090:9090"
+    volumes:
+      - ./4_nn_estimator/api/prometheus.yml:/etc/prometheus/prometheus.yml
     depends_on:
       - 3_db
       - 4_api
@@ -89,6 +97,8 @@ services:
       dockerfile: Dockerfile
     container_name: 5_metrics
     command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+    volumes:
+      - ./5_metrics:/app
     ports:
       - "8003:8000"
     depends_on:
