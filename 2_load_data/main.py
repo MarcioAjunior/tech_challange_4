@@ -61,7 +61,7 @@ async def load(query: QueryModel):
         for _, row in history.iterrows():
                         
             predicted = model.predict(date=row['Date'].item().to_pydatetime().strftime('%Y-%m-%d'))
-
+            
             new_row = {
                 'hash': str(row['Date'].item().to_pydatetime()),
                 'ticker': ticker,

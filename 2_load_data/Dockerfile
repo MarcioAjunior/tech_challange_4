@@ -6,6 +6,7 @@ COPY database.py .
 COPY lstm.py .
 COPY main.py .
 COPY model.py .
+COPY model.pth .
 COPY requirements.txt .
 
 RUN pip install --no-cache-dir -r requirements.txt
