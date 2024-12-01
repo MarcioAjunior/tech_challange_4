@@ -4,9 +4,9 @@ ENV POSTGRES_USER=user \
     POSTGRES_PASSWORD=password \
     POSTGRES_DB=db
 
-COPY data /var/lib/postgresql/data
+COPY ./3_db/data /var/lib/postgresql/data
 
-COPY init.sql /docker-entrypoint-initdb.d/init.sql
+COPY ./3_db/init /docker-entrypoint-initdb.d/init.sql
 
 RUN chown -R postgres:postgres /var/lib/postgresql/data
 

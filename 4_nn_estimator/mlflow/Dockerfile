@@ -6,6 +6,7 @@ WORKDIR /app
 COPY requirements.txt .
 COPY database.py .
 COPY generate_model.py .
+COPY generate_model_pth.py .
 
 COPY mlruns ./mlruns
 
