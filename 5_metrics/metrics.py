@@ -1,6 +1,6 @@
 from sklearn.metrics import mean_squared_error
 from scipy.stats import ks_2samp
-from databese import Db
+from database import Db
 import numpy as np
 import pandas as pd
 import requests
