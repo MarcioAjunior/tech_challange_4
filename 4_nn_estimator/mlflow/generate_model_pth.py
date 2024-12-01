@@ -32,7 +32,6 @@ DB_CONFIG = {
     "password": os.getenv("DB_PASSWORD"),
 }
 
-print(DB_CONFIG, 'DB_CONFIG')
 
 def prepare_dataframe_for_lstm(df, sequence_length):
     df = dc(df)
@@ -46,7 +45,6 @@ def prepare_dataframe_for_lstm(df, sequence_length):
     
     return df
 
-#class Db
 class Db:
     _instance = None
     _config = None
@@ -132,8 +130,7 @@ class Db:
             print(f"Erro ao buscada dados do ticker: {e}")
         finally:
             self.close_connection()
-
-#Classe LSTM
+            
 class LSTM(nn.Module):
     def __init__(self, input_size = 1, hidden_size = 4, num_layers = 1 , sequence_length = 7, porcentage_train = 0.95, batch_size = 16, learning_rate = 0.001,num_epochs = 10, device='cpu'):
         super().__init__()
@@ -228,9 +225,6 @@ class LSTM(nn.Module):
             
             new_sequence = np.append(new_sequence.flatten()[1:], predicted_value_final.flatten()).reshape((-1, 1))
 
-
-            #print(new_sequence)
-
             predictions.append({
                 'date': date,
                 'predicted_close': predicted_value_final.flatten()[0]
@@ -249,6 +243,7 @@ class TimeSeriesDataset(Dataset):
 
     def __getitem__(self, i):
         return self.X[i], self.y[i]
+    
 
 if __name__ == '__main__':
     
@@ -394,14 +389,8 @@ if __name__ == '__main__':
             avg_loss_batchs = epoch_val_loss / len(test_loader)
             print(f'avg_loss_batchs = {avg_loss_batchs}')
             mlflow.log_metric("val_avg_loss", avg_loss_batchs, step=epoch)
-            
-        # Salvando no MLflow
-        mlflow.pytorch.log_model(
-            pytorch_model=model,
-            artifact_path="wrapped_lstm_model_with_scaler",
-            registered_model_name="LSTM_with_scaler"
-        )
         
+        torch.save({'model_state_dict': model.state_dict()}, "model.pth")
         
         
         print("Modelo salvo")
