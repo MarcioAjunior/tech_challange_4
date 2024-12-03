@@ -17,6 +17,7 @@ COPY model.py .
 COPY model.pth .
 COPY prometheus_metrics.py .
 COPY prometheus.yml .
+COPY prepare_result.txt .
 COPY requirements.txt .
 
 RUN pip install --no-cache-dir --timeout 0 -r requirements.txt

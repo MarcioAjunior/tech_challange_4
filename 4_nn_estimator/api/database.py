@@ -125,3 +125,51 @@ class Db:
             print(f"Erro ao buscada dados do ticker: {e}")
         finally:
             self.close_connection()
+           
+    def get_bigger_date(self):
+        
+        self.connection = psycopg2.connect(**self._config)
+        self.connection.autocommit = True
+        self.cursor = self.connection.cursor()
+        
+        query = f"""
+            SELECT 
+                max(date)
+            FROM 
+                lb_tickers_data
+            """
+        try:
+            self.cursor.execute(query)
+            result = self.cursor.fetchone()
+            return result
+        except Exception as e:
+            print(f"Erro ao buscada dados do ticker: {e}")
+        finally:
+            self.close_connection()
+            
+    def get_latests_results(self, limit):
+        
+        self.connection = psycopg2.connect(**self._config)
+        self.connection.autocommit = True
+        self.cursor = self.connection.cursor()
+        
+        query = f"""
+            SELECT 
+                date
+                ,close
+                ,predicted
+            FROM 
+                lb_tickers_data
+            ORDER BY
+                date desc
+            LIMIT
+                {limit}
+            """
+        try:
+            self.cursor.execute(query)
+            result = self.cursor.fetchall()
+            return result
+        except Exception as e:
+            print(f"Erro ao buscada dados do ticker: {e}")
+        finally:
+            self.close_connection()
