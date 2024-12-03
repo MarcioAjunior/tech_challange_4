@@ -18,7 +18,7 @@ COPY generate_model_pth.py .
 
 COPY mlruns ./mlruns
 
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir --timeout 0 -r requirements.txt
 
 EXPOSE 5000
 
