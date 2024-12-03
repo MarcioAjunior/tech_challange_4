@@ -19,8 +19,6 @@ COPY prometheus_metrics.py .
 COPY prometheus.yml .
 COPY requirements.txt .
 
-COPY mlruns ./mlruns
-
 
 RUN pip install --no-cache-dir -r requirements.txt
 
