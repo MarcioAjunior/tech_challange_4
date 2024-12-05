@@ -53,7 +53,7 @@ const ChartPage: React.FC = () => {
     };
 
     fetchMetrics();
-  }, []);
+  }, [selectedDate]);
 
   const fetchChartData = async (startDate: string) => {
     try {
