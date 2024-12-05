@@ -6,13 +6,8 @@ O container Shepherd realiza batidas ao load_data e faz uma consulta a um banco 
 
 1. **Batida na API**:
    - A API `load_data` é chamada via HTTP POST para o endpoint `/load`.
-   - Envia dois parâmetros no corpo da requisição: `start_date` (data de 7 dias atrás) e `end_date` (data do dia de hoje).
+   - Envia dois parâmetros no corpo da requisição: `start_date` (data de 1 dias atrás) e `end_date` (data do dia de hoje).
    - O horário das requisições é sempre definido como "meia-noite e um minuto" (`00:01`).
-
-2. **Consulta ao Banco de Dados**:
-   - O script se conecta a um banco de dados PostgreSQL utilizando `psycopg2`.
-   - Executa uma query para verificar a necessida de fine tunning.
-   - Executa o fine tunning quando necessário.
 
 ### Estrutura do `.env`
 

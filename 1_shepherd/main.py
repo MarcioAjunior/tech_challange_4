@@ -74,8 +74,8 @@ def load_data_to_api():
     except psycopg2.Error as e:
         print(f"Erro ao consultar o banco de dados: {e}")
 
-#schedule.every(DAYS_INTERVAL).days.do(load_data_to_api).at("00:01").do(load_data_to_api)
-schedule.every(DAYS_INTERVAL).minutes.do(load_data_to_api)
+schedule.every(DAYS_INTERVAL).days.do(load_data_to_api).at("00:01").do(load_data_to_api)
+#schedule.every(DAYS_INTERVAL).minutes.do(load_data_to_api)
 
 
 print("Iniciando o script Shepherd")

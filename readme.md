@@ -7,6 +7,11 @@ O presente repositório trata-se da entrega do Tech Challange fase 4 do curso de
     - Deploy do modelo.
     - Escalabilidade e monitoramento.
 
+## Escolha da ação
+
+Para a realização do trabalho, foi escolhida a ação da Microsoft, representada pelo ticker `MSFT` da api do yfinance, além disso foi definida uma arquitetura e uma rotina de funcionamento para a arquitetura.
+
+
 ## Arquitetura
 
 A arquitetura dos serviços é representada visualmente pela imagem abaixo
@@ -30,6 +35,10 @@ Onde :
 3. **3_db**:
    - É um banco de dados postgres configurado somente no docker-compose.yaml, utiliza-se de um script de inicizalização para criar as tabelas necessárias para o funcionamento da architetura. É onde ficam quardados os dados de treinamento, informações sobre o estimador e seu status.
    - [Mais detalhes sobre o 3_db ](./3_db/)
+  
+4. **4_nn_estimator_API**:
+   - É o container que contem a api que espoem o modelo no endpoint POST `/predict`, esse endpoint é usado pelo 6_octopus. Além disso é o container que contabiliza o tempo médio de inferencia no modelo e salva seus logs em 4_nn_estimator_prometheus;
+   - [Mais detalhes sobre o 4_nn_estimator_api ](./4_nn_estimator/api/)
 
 ## Funcionamento
 

@@ -1,6 +1,6 @@
 FROM python:3.11-slim
 
-ENV DAYS_INTERVAL=7
+ENV DAYS_INTERVAL=1
 ENV API_URL=http://2_load_data:8000
 ENV NN_API_URL=http://4_nn_estimator:8000
 ENV NN_ESTIMATOR_NAME=estimator1
