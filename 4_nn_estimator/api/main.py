@@ -27,7 +27,7 @@ DB_CONFIG = {
 MODEL_PATH = os.getenv("MODEL_PATH")
 TICKER = os.getenv("TICKER")
 
-TIMES_RETURNS = 10
+TIMES_RETURNS = 7
 
 class QueryModel(BaseModel):
     date: str

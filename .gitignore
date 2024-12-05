@@ -8,3 +8,4 @@
 /4_nn_estimator/api/.venv
 /4_nn_estimator/api/mlruns
 /5_metrics/.venv
+/6_octopus/node_modules

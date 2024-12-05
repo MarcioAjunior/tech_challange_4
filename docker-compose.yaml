@@ -68,6 +68,18 @@ services:
       - 3_db
     networks:
       - tc
+  
+  6_octopus:
+    container_name: 6_octopus
+    image: 6_octpus:latest
+    ports:
+      - "3001:3000"
+    depends_on:
+      - 3_db
+      - 5_metrics
+      - 4_api
+    networks:
+      - tc
 
 networks:
   tc:
