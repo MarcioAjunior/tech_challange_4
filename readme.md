@@ -1,11 +1,11 @@
 # Tech challange fase 4
 
 O presente repositório trata-se da entrega do Tech Challange fase 4 do curso de pós graduação Machine Learning Engineering do grupo 45. O trabalho apresenta uma arquitetura criada para atender os requisitos da atividade proposta
-    - Coleta e pré processamento de dados.
-    - Desenvolvimento de um modelo LSTM.
-    - Salvamento e exportação do modelo.
-    - Deploy do modelo.
-    - Escalabilidade e monitoramento.
+ - Coleta e pré processamento de dados.
+ - Desenvolvimento de um modelo LSTM.
+ - Salvamento e exportação do modelo.
+ - Deploy do modelo.
+ - Escalabilidade e monitoramento.
 
 ## Escolha da ação
 
