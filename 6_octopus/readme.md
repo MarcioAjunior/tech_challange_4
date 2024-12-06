@@ -1,6 +1,6 @@
 # Octopus
 
-O octopus é o front-end da arquitetura, responsável por mostrar os dados de fechamento dos valores da ação escolhida. O octopus pemite que seja realizada inferencias no modelo ao escolher uma data de até 7 dias do ultimo dado coletado
+O octopus é o front-end da arquitetura, feito em next.js e typescript responsável por mostrar os dados de fechamento dos valores da ação escolhida em um gráfico comparativo. O octopus ainda pemite que seja realizada inferencias através da api no modelo ao escolher uma data de até 7 dias do ultimo dado coletado.
 
 ### Estrutura do `.env`
 

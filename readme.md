@@ -37,8 +37,24 @@ Onde :
    - [Mais detalhes sobre o 3_db ](./3_db/)
   
 4. **4_nn_estimator_API**:
-   - É o container que contem a api que espoem o modelo no endpoint POST `/predict`, esse endpoint é usado pelo 6_octopus. Além disso é o container que contabiliza o tempo médio de inferencia no modelo e salva seus logs em 4_nn_estimator_prometheus;
+   - É a api que espoem o modelo no endpoint POST `/predict`, esse endpoint é usado pelo 6_octopus. Além disso é o container que contabiliza o tempo médio de inferencia no modelo e salva seus logs em 4_nn_estimator_prometheus;
    - [Mais detalhes sobre o 4_nn_estimator_api ](./4_nn_estimator/api/)
+  
+5. **4_nn_estimator_mlflow**:
+   - É um container que contem os estudos realizados para desenvolvimento do modelo, ele contém as métricas e diferente artefatos e estudos que foram utilizados no desenvolvimento, esse container ainda possibilida a criação de um novo modelo quando necessário.
+   - [Mais detalhes sobre o 4_nn_estimator_mlflow ](./4_nn_estimator/mlflow/)
+  
+6. **4_nn_estimator_prometheus**:
+   - É um container que armazena o log da api de inferencia, é possível ainda acessar o container para verificar outras métricas padrão do prometheus.
+   - [Mais detalhes sobre o 4_nn_estimator_prometheus ](./4_nn_estimator/prometheus/)
+  
+7. **5_metrics**:
+   - É uma api que retorna as métrica do modelo no momento em que a requisição é realizada, está api é consumida pelo octopus para mostras essas métricas no frontend da aplicação. as métricas retornadas são MSE, data drift e tempo médio de inferencia.
+   - [Mais detalhes sobre o 5_metrics ](./5_metrics/)
+  
+8. **6_octopus**:
+   - É o frontend da aplicação feito em next e typescript, ele mostra um gráfico com os dados coletado e previsto para realizar um comparativo, além de permitir inferencia a partir de uma data.
+   - [Mais detalhes sobre o 6_octopus ](./6_octopus/)
 
 ## Funcionamento
 
