@@ -96,7 +96,8 @@ const ChartPage: React.FC = () => {
           projecao: [],
         });
       } else if (chartData.detail) {
-        alert(`Erro: ${chartData.detail}`);
+        console.log(chartData.detail)
+        alert(`Erro: Não é possível predizer uma data 7 dias maior que o valor de fechamento mais recente!`);
       } else {
         console.warn("Formato inesperado em chartData:", chartData);
       }

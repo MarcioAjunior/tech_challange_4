@@ -14,6 +14,10 @@ export async function POST(req: Request) {
       throw new Error("A variável de ambiente NEXT_PUBLIC_API_MODEL não está definida.");
     }
     
+    console.log('BBBBBBBBBBBBBBBBBBBBB')
+    console.log(date)
+
+
     const response = await fetch(apiUrl, {
       method: "POST",
       headers: {
@@ -21,6 +25,10 @@ export async function POST(req: Request) {
       },
       body: JSON.stringify({"date" : date}), 
     });
+
+    console.log('CCCCCCCCCCCCCCCCCCCCCCCCCC')
+    console.log(response)
+
 
     const predictions = await response.json()
 
