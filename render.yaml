@@ -23,7 +23,7 @@ services:
       depends_on:
         - 3_db
 
-  - type: database
+  - type: web
     name: 3_db
     env: docker
     plan: free
