@@ -3,5 +3,5 @@ services:
     name: my-app
     env: docker
     plan: standard
-    dockerComposePath: docker-compose.yml
+    dockerComposePath: docker-compose.yaml
     branch: main 
