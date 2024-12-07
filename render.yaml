@@ -4,94 +4,86 @@ services:
     env: docker
     plan: free
     branch: main
-    docker:
-      image: marcioluzjr/1_shepherd:latest
-      ports:
-        - "5434:5432"
-      depends_on:
-        - 3_db
+    image: marcioluzjr/1_shepherd:latest
+    ports:
+      - "5434:5432"
+    depends_on:
+      - 3_db
 
   - type: web
     name: 2_load_data
     env: docker
     plan: free
     branch: main
-    docker:
-      image: marcioluzjr/2_load_data:latest
-      ports:
-        - "8001:8000"
-      depends_on:
-        - 3_db
+    image: marcioluzjr/2_load_data:latest
+    ports:
+      - "8001:8000"
+    depends_on:
+      - 3_db
 
   - type: web
     name: 3_db
     env: docker
     plan: free
     branch: main
-    docker:
-      image: marcioluzjr/3_db:latest
-      ports:
-        - "5434:5432"
+    image: marcioluzjr/3_db:latest
+    ports:
+      - "5434:5432"
 
   - type: web
     name: 4_mlflow
     env: docker
     plan: free
     branch: main
-    docker:
-      image: marcioluzjr/3_nn_mlflow:latest
-      ports:
-        - "5001:5000"
-      depends_on:
-        - 3_db
+    image: marcioluzjr/3_nn_mlflow:latest
+    ports:
+      - "5001:5000"
+    depends_on:
+      - 3_db
 
   - type: web
     name: 4_api
     env: docker
     plan: free
     branch: main
-    docker:
-      image: marcioluzjr/3_nn_api:latest
-      ports:
-        - "8002:8000"
-      depends_on:
-        - 3_db
+    image: marcioluzjr/3_nn_api:latest
+    ports:
+      - "8002:8000"
+    depends_on:
+      - 3_db
 
   - type: web
     name: 4_prometheus
     env: docker
     plan: free
     branch: main
-    docker:
-      image: marcioluzjr/3_nn_prometheus:latest
-      ports:
-        - "9090:9090"
-      depends_on:
-        - 3_db
-        - 4_api
+    image: marcioluzjr/3_nn_prometheus:latest
+    ports:
+      - "9090:9090"
+    depends_on:
+      - 3_db
+      - 4_api
 
   - type: web
     name: 5_metrics
     env: docker
     plan: free
     branch: main
-    docker:
-      image: marcioluzjr/5_metrics:latest
-      ports:
-        - "8003:8000"
-      depends_on:
-        - 3_db
+    image: marcioluzjr/5_metrics:latest
+    ports:
+      - "8003:8000"
+    depends_on:
+      - 3_db
 
   - type: web
     name: 6_octopus
     env: docker
     plan: free
     branch: main
-    docker:
-      image: marcioluzjr/6_octpus:latest
-      ports:
-        - "3001:3000"
-      depends_on:
-        - 3_db
-        - 5_metrics
-        - 4_api
+    image: marcioluzjr/6_octpus:latest
+    ports:
+      - "3001:3000"
+    depends_on:
+      - 3_db
+      - 5_metrics
+      - 4_api
