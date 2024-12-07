@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: my-app
+    name: tc_4
     env: docker
-    plan: standard
+    plan: free
     branch: main
