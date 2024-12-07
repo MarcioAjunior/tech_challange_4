@@ -1,8 +1,7 @@
 services:
-  - type: web
+  - type: database
     name: 3_db
     env: docker
     plan: free
     branch: main
-    image: 
-      url: docker.io/marcioluzjr/3_db:latest
+    image: docker.io/marcioluzjr/3_db:latest
