@@ -4,4 +4,5 @@ services:
     env: docker
     plan: free
     branch: main
-    image: docker.io/marcioluzjr/3_db:latest
+    image:
+      url: docker.io/marcioluzjr/3_db:latest
