@@ -1,5 +1,5 @@
 services:
-  - type: database
+  - type: web
     name: 3_db
     env: docker
     plan: free
